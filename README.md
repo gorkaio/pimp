@@ -9,24 +9,27 @@ Service dependencies are defined as an array:
         array(
             'services' => array(
                 'SimpleService' => array(
-                    'Gorkaio\Pimp\Test\Fixtures\SimpleService'
+                    'class' => 'Gorkaio\Pimp\Test\Fixtures\SimpleService'
                 ),
                 'ServiceWithSimpleDependency' => array(
-                    'Gorkaio\Pimp\Test\Fixtures\ServiceWithSimpleDependency',
-                    array(
+                    'class' => 'Gorkaio\Pimp\Test\Fixtures\ServiceWithSimpleDependency',
+                    'params' => array(
                         '@SimpleService'
                     )
                 ),
                 'ServiceWithMixedDependencies' => array(
-                    'Gorkaio\Pimp\Test\Fixtures\ServiceWithMixedDependencies',
-                    array(
+                    'class' => 'Gorkaio\Pimp\Test\Fixtures\ServiceWithMixedDependencies',
+                    'params' => array(
                         '@SimpleService',
                         '~param1',
                         '@ServiceWithSimpleDependency',
                         '~param2',
                         42
                     ),
-                    array(
+                    'setters' => array(
+                        'setParam' => array(1, '~param1')
+                    ),
+                    'options' => array(
                         'scope' => 'singleton'
                     )
                 )
