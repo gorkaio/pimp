@@ -80,14 +80,12 @@ Each service definition is declared as follows:
 - _serviceName_ is the name that will be used by the Container to retrieve this service.
 - _class_ is the fully qualified name of the service class
 - _params_ (optional) the ordered params needed by the service constructor, where:
--- a param preceded by `@` is a reference to another service name
--- a param preceded by `~` is a reference to a config param
--- if neither of the above precede the param value, it is passed to the constructor as is
-- _setters_ (optional) service setter methods that will be called after service instantiation. Same rules apply for its
-params as for those of th service.
+	- a param preceded by `@` is a reference to another service name
+	- a param preceded by `~` is a reference to a config param
+	- if neither of the above precede the param value, it is passed to the constructor as a literal value
+- _setters_ (optional) service setter methods that will be called after service instantiation. Same rules apply for its params as for those of the service.
 - _options_ (optional) the Container options for this service, where:
--- 'scope' option defines whether the service will be instanced as a singleton or a prototype. That is, if the
-Container should return the same instance or a new one each time `get()` is called. 'prototype' will be used by default.
+	- 'scope' option defines whether the service will be instanced as a singleton or a prototype. That is, if the Container should return the same instance or a new one each time `get()` is called. 'prototype' will be used by default.
 
 
 Params
