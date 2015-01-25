@@ -2,3 +2,6 @@ vendor/
 
 # IDE
 .idea
+
+# Others
+.DS_Store

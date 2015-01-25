@@ -17,3 +17,4 @@ namespace Gorkaio\Pimp\Exceptions;
 class ServiceException extends \Exception
 {
 }
+
