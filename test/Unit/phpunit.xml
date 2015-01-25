@@ -1,0 +1,7 @@
+<phpunit bootstrap="Bootstrap.php">
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true" addUncoveredFilesFromWhitelist="false">
+            <directory suffix=".php">../../src/</directory>
+        </whitelist>
+    </filter>
+</phpunit>

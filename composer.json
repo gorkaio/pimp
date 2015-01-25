@@ -1,0 +1,29 @@
+{
+  "name": "gorkaio/pimp",
+  "description": "Simple Dependency Container",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Gorka López de Torre",
+      "email": "info@gorka.io",
+      "homepage": "http://www.gorka.io"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Gorkaio\\Pimp\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Gorkaio\\Pimp\\Test\\": "test/Unit"
+    }
+  },
+  "require": {
+    "php": ">=5.5.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.*"
+  },
+  "minimum-stability": "stable"
+}
