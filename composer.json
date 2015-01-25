@@ -1,6 +1,6 @@
 {
   "name": "gorkaio/pimp",
-  "description": "Simple Dependency Container",
+  "description": "Simple Dependency Injection Container",
   "license": "MIT",
   "authors": [
     {
