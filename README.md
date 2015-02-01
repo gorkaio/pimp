@@ -3,6 +3,36 @@ Pimp: Simple Dependency Injection Container
 
 _Pimp_ is a simple dependency injection container implementation in PHP
 
+Container
+---------
+
+Simple use case:
+
+    use Gorkaio\Pimp\Container;
+
+    $config = array(
+        'services' =>
+            array(
+                'roadRunner' => array(
+                    'class' => 'Acme\Services\RoadRunnerService'
+                )
+            )
+    );
+
+    $container = new Container($config);
+    $roadRunner = $container->get('RoadRunner');
+
+By default container initialization will validate configuration to check if defined services, params and options are
+valid. Config validation is quite thorough, so you might want to disable it on production environments once everything
+looks ok on devel:
+
+    $useValidation = $this->isDevelEnvironment();
+    $container = new Container($config, $useValidation);
+
+
+Config
+------
+
 Service dependencies are defined as an array:
 
     $config = array(
@@ -90,7 +120,6 @@ Each service definition is declared as follows:
 - _options_ (optional) the Container options for this service, where:
 	- 'scope' option defines whether the service will be instanced as a singleton or a prototype. That is, if the Container should return the same instance or a new one each time `get()` is called. 'prototype' will be used by default.
 
-
 Params
 ------
 Simple _(key, value)_ pairs used by service definitions above.
@@ -100,3 +129,4 @@ Todo
 - Detect recursive dependencies beyond the self-reference
 - Allow service param escaping. Right now, it would not be possible to use literals '@me' or '~you' as a param value,
 as they would be parsed as service reference and param reference values.
+- Improve constructor and setter signature validation

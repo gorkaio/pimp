@@ -8,6 +8,7 @@
 namespace Gorkaio\Pimp;
 
 use ReflectionClass;
+use Gorkaio\Pimp\Exceptions\InvalidConfigException;
 use Gorkaio\Pimp\Exceptions\ServiceException;
 use Gorkaio\Pimp\Exceptions\ServiceNotFoundException;
 
@@ -33,10 +34,16 @@ class Container implements ServiceContainerInterface
 
     /**
      * @param array $config Configuration array for services and params
+     * @param bool $useValidation Validate config on container instantiation
+     * @throws InvalidConfigException
      */
-    public function __construct($config)
+    public function __construct($config, $useValidation = true)
     {
-        if ($this->validateConfig($config)) {
+        if ($useValidation) {
+            $validator = new ConfigValidator();
+            if (!$validator->isValid($config)) {
+                throw new InvalidConfigException();
+            }
             $this->config = $config;
         }
     }
@@ -78,11 +85,14 @@ class Container implements ServiceContainerInterface
     private function getNewInstance($serviceName)
     {
         try {
-            $serviceClassName = $this->config['services'][$serviceName]['class'];
+            $serviceConfig = $this->config['services'][$serviceName];
+            if (isset($serviceConfig['class']) && $serviceConfig['class'] != '') {
+                $serviceClassName = $serviceConfig['class'];
+            } else {
+                throw new \InvalidArgumentException('Invalid config');
+            }
 
-            $serviceParameters = isset($this->config['services'][$serviceName]['params'])
-                ?$this->config['services'][$serviceName]['params']
-                :array();
+            $serviceParameters = isset($serviceConfig['params'])?$serviceConfig['params']:array();
 
             // Service instantiation
             $paramValues = $this->parseParameters($serviceParameters);
@@ -94,15 +104,12 @@ class Container implements ServiceContainerInterface
             }
 
             // Call defined setters
-            $serviceSetters = isset($this->config['services'][$serviceName]['setters'])
-                ?$this->config['services'][$serviceName]['setters']
-                :array();
+            $serviceSetters = isset($serviceConfig['setters'])?$serviceConfig['setters']:array();
 
             foreach ($serviceSetters as $setterName => $setterParams) {
                 if ($setterParams === null) {
                     $setterParams = array();
                 }
-
                 call_user_func_array(
                     array($service, $setterName),
                     $this->parseParameters($setterParams)
@@ -148,213 +155,6 @@ class Container implements ServiceContainerInterface
             }
         }
         return $paramValues;
-    }
-
-    /**
-     * Validates Pimp configuration
-     *
-     * @param array $config Services and params configuration
-     * @return bool True if configuration is valid, false otherwise
-     * @throws \InvalidArgumentException
-     */
-    private function validateConfig($config)
-    {
-        foreach ($config['services'] as $serviceName => $serviceConfig) {
-            if (!isset($serviceConfig['class']) || empty($serviceConfig['class'])) {
-                throw new \InvalidArgumentException(
-                    "Class undefined for service '{$serviceName}'"
-                );
-            }
-
-            if (!class_exists($serviceConfig['class'])) {
-                throw new \InvalidArgumentException(
-                    "Class '{$serviceConfig['class']}' for service '{$serviceName}' not found"
-                );
-            }
-
-            if (!(
-                $this->validateServiceParams($serviceName, $config) &&
-                $this->validateServiceSetters($serviceName, $config) &&
-                $this->validateServiceOptions($serviceName, $config)
-            )) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Validates service dependencies and params
-     *
-     * - If service params is defined, it must be null or an array
-     * - If the service has a service dependency, this service must be defined in the configuration
-     * - If the service has a param dependency, this param must be defined in the configuration
-     * - Services cannot define themselves as a dependency
-     * - @todo Recursive dependencies should also be detected
-     *
-     * @param string $serviceName Service name
-     * @param array $config Services and params configuration
-     * @return bool True if configuration is valid, false otherwise
-     */
-    private function validateServiceParams($serviceName, $config)
-    {
-        if (!isset($config['services']) || !array_key_exists($serviceName, $config['services'])) {
-            throw new \InvalidArgumentException(
-                "Invalid configuration found validating service '{$serviceName}'"
-            );
-        }
-
-        $serviceConfig = $config['services'][$serviceName];
-        if (!isset($serviceConfig['params']) || $serviceConfig['params'] === null) {
-            return true;
-        } elseif (!is_array($serviceConfig['params'])) {
-            throw new \InvalidArgumentException(
-                "Invalid configuration found validating service '{$serviceName}'"
-            );
-        }
-
-        $serviceParams = $serviceConfig['params'];
-        foreach ($serviceParams as $serviceParameter) {
-            if (preg_match("/^@(.*)/", $serviceParameter, $matches)) {
-                if (!isset($matches[1])) {
-                    throw new \InvalidArgumentException("Invalid configuration of '{$serviceName}'");
-                } else {
-                    if ($serviceName == $matches[1]) {
-                        throw new \InvalidArgumentException("Recursive dependency in service '{$serviceName}'");
-                    }
-
-                    if (!array_key_exists($matches[1], $config['services'])) {
-                        throw new \InvalidArgumentException(
-                            "Service '{$serviceName}' requires undefined service '{$matches[1]}'"
-                        );
-                    }
-                }
-            } elseif (preg_match("/^~(.*)/", $serviceParameter, $matches)) {
-                if (!isset($matches[1])) {
-                    throw new \InvalidArgumentException("Invalid configuration of '{$serviceName}'");
-                } else {
-                    if (!isset($config['params']) ||
-                        !is_array($config['params']) ||
-                        !array_key_exists($matches[1], $config['params'])
-                    ) {
-                        throw new \InvalidArgumentException(
-                            "Service '{$serviceName}' requires undefined param '{$matches[1]}'"
-                        );
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Validates service configuration options
-     *
-     * @param string $serviceName Service name
-     * @param array $config Services and params configuration
-     * @return bool True if configuration is valid, false otherwise
-     */
-    private function validateServiceOptions($serviceName, $config)
-    {
-        if (!isset($config['services']) || !array_key_exists($serviceName, $config['services'])) {
-            throw new \InvalidArgumentException(
-                "Invalid configuration found validating service '{$serviceName}'"
-            );
-        }
-
-        $serviceConfig = $config['services'][$serviceName];
-        if (!isset($serviceConfig['options']) || $serviceConfig['options'] === null) {
-            return true;
-        } elseif (!is_array($serviceConfig['options'])) {
-            throw new \InvalidArgumentException(
-                "Invalid configuration found validating service '{$serviceName}'"
-            );
-        }
-
-        foreach ($serviceConfig['options'] as $optionName => $optionValue) {
-            // @todo: obvious overkill until we refactor this and add other options
-            if (!in_array($optionName, array('scope'))) {
-                throw new \InvalidArgumentException(
-                    "Unknown option '{$optionName}' validating service '{$serviceName}'"
-                );
-            }
-
-            if (!$this->validateOption($optionName, $optionValue)) {
-                throw new \InvalidArgumentException(
-                    "Invalid option value for '{$optionName}' validating service '{$serviceName}'"
-                );
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Validates single service configuration option
-     *
-     * @param string $optionName Option name
-     * @param mixed $optionValue Option value
-     * @return bool True if configuration is valid, false otherwise
-     */
-    private function validateOption($optionName, $optionValue)
-    {
-        switch ($optionName) {
-            case 'scope':
-                $isValid = in_array($optionValue, array('singleton', 'prototype'));
-                break;
-            default:
-                $isValid = false;
-        }
-        return $isValid;
-    }
-
-    /**
-     * Validates service setters
-     *
-     * @param string $serviceName Service name
-     * @param array $config Services and params configuration
-     * @return bool True if configuration is valid, false otherwise
-     */
-    private function validateServiceSetters($serviceName, $config)
-    {
-        if (!isset($config['services']) || !array_key_exists($serviceName, $config['services'])) {
-            throw new \InvalidArgumentException(
-                "Invalid configuration found validating service '{$serviceName}'"
-            );
-        }
-
-        $serviceConfig = $config['services'][$serviceName];
-        if (!isset($serviceConfig['setters']) || $serviceConfig['setters'] === null) {
-            return true;
-        } elseif (!is_array($serviceConfig['setters'])) {
-            throw new \InvalidArgumentException(
-                "Invalid configuration found validating service '{$serviceName}'"
-            );
-        }
-
-        $serviceSetters = $serviceConfig['setters'];
-        $r = isset($r)?$r:new ReflectionClass($config['services'][$serviceName]['class']);
-
-        foreach ($serviceSetters as $setterName => $setterParams) {
-            if ($setterParams === null) {
-                $setterParams = array();
-            } elseif (!is_array($setterParams)) {
-                throw new \InvalidArgumentException(
-                    "Invalid '{$setterName}' setter configuration for service '{$serviceName}'"
-                );
-            }
-
-            if (!$r->hasMethod($setterName) ||
-                $r->getMethod($setterName)->getNumberOfRequiredParameters() !== count($setterParams)
-            ) {
-                throw new \InvalidArgumentException(
-                    "Invalid '{$setterName}' setter configuration for service '{$serviceName}'"
-                );
-            }
-        }
-        return true;
     }
 }
 

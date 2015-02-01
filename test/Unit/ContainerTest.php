@@ -3,7 +3,6 @@
 namespace Gorkaio\Pimp\Test\Services;
 
 use Gorkaio\Pimp\Container;
-use Gorkaio\Pimp\Test\Fixtures\SimpleService;
 
 class ContainerTest extends \PHPUnit_Framework_TestCase {
 
@@ -12,8 +11,13 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
      */
     protected $sut;
 
+    public function testContainerInitializedWithValidationOffWillNotValidateConfig()
+    {
+        $this->sut = new Container('This is not a valid config', false);
+    }
+
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException \Gorkaio\Pimp\Exceptions\InvalidConfigException
      */
     public function testContainerInitializedWithUnexistingServiceClassThrowsException()
     {
@@ -29,7 +33,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException \Gorkaio\Pimp\Exceptions\InvalidConfigException
      */
     public function testContainerInitializedWithMisconfiguredServiceThrowsException()
     {
@@ -46,7 +50,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException \Gorkaio\Pimp\Exceptions\InvalidConfigException
      */
     public function testContainerInitializedWithServiceWithUnknownServiceDependencyWillThrowException()
     {
@@ -63,7 +67,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException \Gorkaio\Pimp\Exceptions\InvalidConfigException
      */
     public function testContainerInitializedWithServiceWithUnknownParamDependencyWillThrowException()
     {
@@ -81,7 +85,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException \Gorkaio\Pimp\Exceptions\InvalidConfigException
      */
     public function testContainerInitializedWithServiceWithUndefinedParamDependencyWillThrowException()
     {
@@ -98,7 +102,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException \Gorkaio\Pimp\Exceptions\InvalidConfigException
      */
     public function testContainerInitializedWithServiceWithImmediateDependencyRecursionThrowsException()
     {
@@ -114,14 +118,19 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
         );
     }
 
+    /**
+     * @expectedException \Gorkaio\Pimp\Exceptions\InvalidConfigException
+     */
     public function testContainerInitializedWithInvalidScopeOptionWillThrowException()
     {
-        array(
-            'services' => array(
-                'SimpleService' => array(
-                    'class' => 'Gorkaio\Pimp\Test\Fixtures\SimpleService',
-                    'options' => array(
-                        'scope' => 'invalidScope'
+        $this->sut = new Container(
+            array(
+                'services' => array(
+                    'SimpleService' => array(
+                        'class' => 'Gorkaio\Pimp\Test\Fixtures\SimpleService',
+                        'options' => array(
+                            'scope' => 'invalidScope'
+                        )
                     )
                 )
             )
