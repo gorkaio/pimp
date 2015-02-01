@@ -1,6 +1,6 @@
 <?php
 
-namespace Gorkaio\Pimp\Test\Services;
+namespace Gorkaio\Pimp\Tests\Services;
 
 use Gorkaio\Pimp\Container;
 
@@ -25,7 +25,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'SimpleService' => array(
-                        'class' => 'Gorkaio\Pimp\Test\Fixtures\UnexistingService'
+                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\UnexistingService'
                     )
                 )
             )
@@ -41,7 +41,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'SimpleService' => array(
-                        'class' => 'Gorkaio\Pimp\Test\Fixtures\SimpleService',
+                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\SimpleService',
                         'params' => 'ThisShouldBeAnArray'
                     )
                 )
@@ -58,7 +58,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'ServiceWithSimpleDependency' => array(
-                        'class' => 'Gorkaio\Pimp\Test\Fixtures\ServiceWithSimpleDependency',
+                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\ServiceWithSimpleDependency',
                         'params' => array('@SimpleService')
                     )
                 )
@@ -75,7 +75,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'ServiceWithSimpleDependency' => array(
-                        'class' => 'Gorkaio\Pimp\Test\Fixtures\ServiceWithSimpleDependency',
+                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\ServiceWithSimpleDependency',
                         'params' => array('~someValue')
                     )
                 ),
@@ -93,7 +93,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'ServiceWithSimpleDependency' => array(
-                        'class' => 'Gorkaio\Pimp\Test\Fixtures\ServiceWithSimpleDependency',
+                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\ServiceWithSimpleDependency',
                         'params' => array('~someValue')
                     )
                 )
@@ -110,7 +110,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'ServiceWithSimpleDependency' => array(
-                        'class' => 'Gorkaio\Pimp\Test\Fixtures\ServiceWithSimpleDependency',
+                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\ServiceWithSimpleDependency',
                         'params' => array('@ServiceWithSimpleDependency')
                     )
                 )
@@ -127,7 +127,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'SimpleService' => array(
-                        'class' => 'Gorkaio\Pimp\Test\Fixtures\SimpleService',
+                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\SimpleService',
                         'options' => array(
                             'scope' => 'invalidScope'
                         )
@@ -143,13 +143,13 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'SimpleService' => array(
-                        'class' => 'Gorkaio\Pimp\Test\Fixtures\SimpleService'
+                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\SimpleService'
                     )
                 )
             )
         );
 
-        $this->assertInstanceOf('Gorkaio\Pimp\Test\Fixtures\SimpleService', $this->sut->get('SimpleService'));
+        $this->assertInstanceOf('Gorkaio\Pimp\Tests\Fixtures\SimpleService', $this->sut->get('SimpleService'));
     }
 
     public function testGetCalledWithAnExistingServiceWithSimpleDependencyWillReturnService() {
@@ -158,10 +158,10 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'SimpleService' => array(
-                        'class' => 'Gorkaio\Pimp\Test\Fixtures\SimpleService'
+                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\SimpleService'
                     ),
                     'ServiceWithSimpleDependency' => array(
-                        'class' => 'Gorkaio\Pimp\Test\Fixtures\ServiceWithSimpleDependency',
+                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\ServiceWithSimpleDependency',
                         'params' => array('@SimpleService')
                     )
                 )
@@ -169,12 +169,12 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
         );
 
         $this->assertInstanceOf(
-            'Gorkaio\Pimp\Test\Fixtures\ServiceWithSimpleDependency',
+            'Gorkaio\Pimp\Tests\Fixtures\ServiceWithSimpleDependency',
             $this->sut->get('ServiceWithSimpleDependency')
         );
 
         $this->assertInstanceOf(
-            'Gorkaio\Pimp\Test\Fixtures\SimpleService',
+            'Gorkaio\Pimp\Tests\Fixtures\SimpleService',
             $this->sut->get('ServiceWithSimpleDependency')->getDependency()
         );
     }
@@ -185,14 +185,14 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'SimpleService' => array(
-                        'class' => 'Gorkaio\Pimp\Test\Fixtures\SimpleService'
+                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\SimpleService'
                     ),
                     'ServiceWithSimpleDependency' => array(
-                        'class' => 'Gorkaio\Pimp\Test\Fixtures\ServiceWithSimpleDependency',
+                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\ServiceWithSimpleDependency',
                         'params' => array('@SimpleService')
                     ),
                     'ServiceWithMixedDependencies' => array(
-                        'class' => 'Gorkaio\Pimp\Test\Fixtures\ServiceWithMixedDependencies',
+                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\ServiceWithMixedDependencies',
                         'params' => array(
                             '@SimpleService',
                             '~param1',
@@ -212,17 +212,17 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
         $serviceInstance = $this->sut->get('ServiceWithMixedDependencies');
 
         $this->assertInstanceOf(
-            'Gorkaio\Pimp\Test\Fixtures\ServiceWithMixedDependencies',
+            'Gorkaio\Pimp\Tests\Fixtures\ServiceWithMixedDependencies',
             $serviceInstance
         );
 
         $this->assertInstanceOf(
-            'Gorkaio\Pimp\Test\Fixtures\SimpleService',
+            'Gorkaio\Pimp\Tests\Fixtures\SimpleService',
             $serviceInstance->getService(0)
         );
 
         $this->assertInstanceOf(
-            'Gorkaio\Pimp\Test\Fixtures\ServiceWithSimpleDependency',
+            'Gorkaio\Pimp\Tests\Fixtures\ServiceWithSimpleDependency',
             $serviceInstance->getService(1)
         );
 
@@ -237,7 +237,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'SimpleService' => array(
-                        'class' => 'Gorkaio\Pimp\Test\Fixtures\SimpleService',
+                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\SimpleService',
                         'options' => array('scope' => 'singleton')
                     )
                 )
@@ -245,7 +245,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
         );
 
         $instance = $this->sut->get('SimpleService');
-        $this->assertInstanceOf('Gorkaio\Pimp\Test\Fixtures\SimpleService', $instance);
+        $this->assertInstanceOf('Gorkaio\Pimp\Tests\Fixtures\SimpleService', $instance);
         $this->assertSame($instance, $this->sut->get('SimpleService'));
     }
 
@@ -255,7 +255,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'SimpleService' => array(
-                        'class' => 'Gorkaio\Pimp\Test\Fixtures\SimpleService',
+                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\SimpleService',
                         'options' => array('scope' => 'prototype')
                     )
                 )
@@ -263,7 +263,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
         );
 
         $instance = $this->sut->get('SimpleService');
-        $this->assertInstanceOf('Gorkaio\Pimp\Test\Fixtures\SimpleService', $instance);
+        $this->assertInstanceOf('Gorkaio\Pimp\Tests\Fixtures\SimpleService', $instance);
         $this->assertNotSame($instance, $this->sut->get('SimpleService'));
     }
 
@@ -273,14 +273,14 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'SimpleService' => array(
-                        'class' => 'Gorkaio\Pimp\Test\Fixtures\SimpleService'
+                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\SimpleService'
                     )
                 )
             )
         );
 
         $instance = $this->sut->get('SimpleService');
-        $this->assertInstanceOf('Gorkaio\Pimp\Test\Fixtures\SimpleService', $instance);
+        $this->assertInstanceOf('Gorkaio\Pimp\Tests\Fixtures\SimpleService', $instance);
         $this->assertNotSame($instance, $this->sut->get('SimpleService'));
     }
 
@@ -290,14 +290,14 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'SimpleService' => array(
-                        'class' => 'Gorkaio\Pimp\Test\Fixtures\SimpleService'
+                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\SimpleService'
                     ),
                     'ServiceWithSimpleDependency' => array(
-                        'class' => 'Gorkaio\Pimp\Test\Fixtures\ServiceWithSimpleDependency',
+                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\ServiceWithSimpleDependency',
                         'params' => array('@SimpleService')
                     ),
                     'ServiceWithMixedDependencies' => array(
-                        'class' => 'Gorkaio\Pimp\Test\Fixtures\ServiceWithMixedDependencies',
+                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\ServiceWithMixedDependencies',
                         'params' => array(
                             '@SimpleService',
                             '~param1'
@@ -318,17 +318,17 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
         $serviceInstance = $this->sut->get('ServiceWithMixedDependencies');
 
         $this->assertInstanceOf(
-            'Gorkaio\Pimp\Test\Fixtures\ServiceWithMixedDependencies',
+            'Gorkaio\Pimp\Tests\Fixtures\ServiceWithMixedDependencies',
             $serviceInstance
         );
 
         $this->assertInstanceOf(
-            'Gorkaio\Pimp\Test\Fixtures\SimpleService',
+            'Gorkaio\Pimp\Tests\Fixtures\SimpleService',
             $serviceInstance->getService(0)
         );
 
         $this->assertInstanceOf(
-            'Gorkaio\Pimp\Test\Fixtures\ServiceWithSimpleDependency',
+            'Gorkaio\Pimp\Tests\Fixtures\ServiceWithSimpleDependency',
             $serviceInstance->getService(1)
         );
 

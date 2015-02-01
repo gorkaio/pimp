@@ -48,25 +48,10 @@ class ConfigValidator
         }
 
         foreach ($config['services'] as $serviceName => $serviceConfig) {
-            $isValid = true;
-            if (!$this->validateServiceClass($serviceName, $config)) {
-                $isValid = false;
-            } else {
-                if (!$this->validateServiceParams($serviceName, $config)) {
-                    $isValid = false;
-                }
-
-                if (!$this->validateServiceSetters($serviceName, $config)) {
-                    $isValid = false;
-                }
-            }
-
-            if (!$this->validateServiceOptions($serviceName, $config)) {
-                $isValid = false;
-            }
-
-            if (!$isValid) {
-                break;
+            if ($this->validateServiceClass($serviceName, $config)) {
+                $this->validateServiceParams($serviceName, $config);
+                $this->validateServiceSetters($serviceName, $config);
+                $this->validateServiceOptions($serviceName, $config);
             }
         }
 
@@ -90,6 +75,22 @@ class ConfigValidator
     }
 
     /**
+     * Gets service configuration
+     *
+     * @param $serviceName string Service name
+     * @param $config array Pimp configuration array
+     * @return mixed
+     * @throws \RuntimeException
+     */
+    private function getServiceConfig($serviceName, $config)
+    {
+        if (!isset($config['services'][$serviceName])) {
+            throw new \RuntimeException("Config validator required a non existing service name");
+        }
+        return $config['services'][$serviceName];
+    }
+
+    /**
      * Validates class definition for a service
      *
      * - Class key defined
@@ -101,7 +102,7 @@ class ConfigValidator
      */
     private function validateServiceClass($serviceName, $config)
     {
-        $serviceConfig = $config['services'][$serviceName];
+        $serviceConfig = $this->getServiceConfig($serviceName, $config);
 
         if (!isset($serviceConfig['class']) || empty($serviceConfig['class'])) {
             $this->addError("Class undefined for service '{$serviceName}'");
@@ -133,7 +134,7 @@ class ConfigValidator
      */
     private function validateServiceParams($serviceName, $config)
     {
-        $serviceConfig = $config['services'][$serviceName];
+        $serviceConfig = $this->getServiceConfig($serviceName, $config);
         if (!isset($serviceConfig['params']) || $serviceConfig['params'] === null) {
             return true;
         } elseif (!is_array($serviceConfig['params'])) {
@@ -195,7 +196,7 @@ class ConfigValidator
      */
     private function validateServiceOptions($serviceName, $config)
     {
-        $serviceConfig = $config['services'][$serviceName];
+        $serviceConfig = $this->getServiceConfig($serviceName, $config);
         if (!isset($serviceConfig['options']) || $serviceConfig['options'] === null) {
             return true;
         } elseif (!is_array($serviceConfig['options'])) {
@@ -232,7 +233,7 @@ class ConfigValidator
     {
         $optionValidators = array(
             'scope' => function ($value) {
-                return in_array($value, array('singleton', 'prototype'));
+                return in_array($value, array(Container::SERVICE_SCOPE_SINGLETON, Container::SERVICE_SCOPE_PROTOTYPE));
             }
         );
 
@@ -248,7 +249,7 @@ class ConfigValidator
      */
     private function validateServiceSetters($serviceName, $config)
     {
-        $serviceConfig = $config['services'][$serviceName];
+        $serviceConfig = $this->getServiceConfig($serviceName, $config);
         if (!isset($serviceConfig['setters']) || $serviceConfig['setters'] === null) {
             return true;
         } elseif (!is_array($serviceConfig['setters'])) {

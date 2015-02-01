@@ -5,7 +5,7 @@ php:
 before_script:
   - composer install --dev
 
-script: vendor/bin/phpunit --configuration test/Unit/phpunit.xml --coverage-clover=coverage.clover test/Unit
+script: vendor/bin/phpunit --configuration tests/Unit/phpunit.xml --coverage-clover=coverage.clover tests/Unit
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar

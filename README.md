@@ -2,6 +2,7 @@
 _Pimp_ is a simple dependency injection container implementation in PHP
 
 [![Build Status](https://travis-ci.org/glopezdetorre/pimp.svg?branch=master)](https://travis-ci.org/glopezdetorre/pimp)
+[![Code Coverage](https://scrutinizer-ci.com/g/glopezdetorre/pimp/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/glopezdetorre/pimp/?branch=master)
 
 ## Installation
 Using _composer_, inside your project root run:

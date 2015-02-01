@@ -16,7 +16,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Gorkaio\\Pimp\\Test\\": "test/Unit"
+      "Gorkaio\\Pimp\\Tests\\": "tests/Unit"
     }
   },
   "require": {
