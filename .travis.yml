@@ -4,6 +4,10 @@ php:
 
 script: phpunit --configuration test/Unit/phpunit.xml --coverage-text test/Unit
 
+before_script:
+  - wget http://getcomposer.org/composer.phar
+  - php composer.phar install
+
 notifications:
   email:
     - info@gorka.io
