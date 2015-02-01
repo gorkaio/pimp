@@ -1,6 +1,8 @@
 # Pimp: Simple Dependency Injection Container
 _Pimp_ is a simple dependency injection container implementation in PHP
 
+[![Build Status](https://travis-ci.org/glopezdetorre/pimp.svg?branch=master)](https://travis-ci.org/glopezdetorre/pimp)
+
 ## Installation
 Using _composer_, inside your project root run:
 
@@ -129,7 +131,7 @@ Simple _(key, value)_ pairs used by service definitions above.
             'param2' => 'myParamValue'
         )
     );
-    
+
 ## Todo
 - Detect recursive dependencies beyond the self-reference
 - Allow service param escaping. Right now, it would not be possible to use literals '@me' or '~you' as a param value,

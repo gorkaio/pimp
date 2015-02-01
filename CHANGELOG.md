@@ -4,6 +4,11 @@
 ### Changed
 - Support escaping on service param names
 
+## [1.0.2] - 2015-02-01
+### Changed
+- Fixed travis config
+- Added scrutinizer support
+
 ## [1.0.1] - 2015-02-01
 ### Added
 - Added changelog
