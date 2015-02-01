@@ -1,0 +1,9 @@
+language: php
+php:
+  - 5.5
+
+script: phpunit --configuration test/Unit/phpunit.xml --coverage-text test/Unit
+
+notifications:
+  email:
+    - info@gorka.io

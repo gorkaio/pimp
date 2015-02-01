@@ -1,11 +1,12 @@
-Pimp: Simple Dependency Injection Container
-===========================================
-
+# Pimp: Simple Dependency Injection Container
 _Pimp_ is a simple dependency injection container implementation in PHP
 
-Container
----------
+## Installation
+Using _composer_, inside your project root run:
 
+    composer require gorkaio/pimp
+
+## Container
 Simple use case:
 
     use Gorkaio\Pimp\Container;
@@ -13,7 +14,7 @@ Simple use case:
     $config = array(
         'services' =>
             array(
-                'roadRunner' => array(
+                'RoadRunner' => array(
                     'class' => 'Acme\Services\RoadRunnerService'
                 )
             )
@@ -30,9 +31,7 @@ looks ok on devel:
     $container = new Container($config, $useValidation);
 
 
-Config
-------
-
+## Config
 Service dependencies are defined as an array:
 
     $config = array(
@@ -76,9 +75,7 @@ Service dependencies are defined as an array:
 
 _services_ key holds service definitions. _params_ holds parameters.
 
-Services
---------
-
+## Services
 Each service definition is declared as follows:
 
     '<serviceName>' => array(
@@ -120,12 +117,20 @@ Each service definition is declared as follows:
 - _options_ (optional) the Container options for this service, where:
 	- 'scope' option defines whether the service will be instanced as a singleton or a prototype. That is, if the Container should return the same instance or a new one each time `get()` is called. 'prototype' will be used by default.
 
-Params
-------
+## Params
 Simple _(key, value)_ pairs used by service definitions above.
 
-Todo
-----
+    $config = array(
+        'services' => array(
+            ...
+        ),
+        'params' => array(
+            'param1' => 23,
+            'param2' => 'myParamValue'
+        )
+    );
+    
+## Todo
 - Detect recursive dependencies beyond the self-reference
 - Allow service param escaping. Right now, it would not be possible to use literals '@me' or '~you' as a param value,
 as they would be parsed as service reference and param reference values.
