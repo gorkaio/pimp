@@ -1,5 +1,5 @@
 {
-  "name": "Gorka/pimp",
+  "name": "gorka/pimp",
   "description": "Simple Dependency Injection Container",
   "license": "MIT",
   "authors": [
