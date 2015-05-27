@@ -1,8 +1,8 @@
 <?php
 
-namespace Gorkaio\Pimp\Tests;
+namespace Tests\Gorka\Pimp;
 
-use Gorkaio\Pimp\ConfigValidator;
+use Gorka\Pimp\ConfigValidator;
 
 class ConfigValidatorTest extends \PHPUnit_Framework_TestCase {
 
@@ -67,14 +67,14 @@ class ConfigValidatorTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'someService' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\MyFakeClass'
+                        'class' => 'Tests\Gorka\Pimp\MyFakeClass'
                     )
                 )
             )
         );
         $this->assertFalse($isValid);
         $this->assertContains(
-            "Class 'Gorkaio\\Pimp\\Tests\\MyFakeClass' for service 'someService' not found",
+            "Class 'Tests\\Gorka\\Pimp\\MyFakeClass' for service 'someService' not found",
             $this->sut->getErrors()
         );
     }
@@ -85,7 +85,7 @@ class ConfigValidatorTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'someService' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\SimpleService',
+                        'class' => 'Tests\Gorka\Pimp\Fixtures\SimpleService',
                         'params' => 'This is not a valid params value'
                     )
                 )
@@ -104,10 +104,10 @@ class ConfigValidatorTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'simpleService' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\SimpleService'
+                        'class' => 'Tests\Gorka\Pimp\Fixtures\SimpleService'
                     ),
                     'someService' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\ServiceWithMixedDependencies',
+                        'class' => 'Tests\Gorka\Pimp\Fixtures\ServiceWithMixedDependencies',
                         'params' => array(
                             '@simpleService'
                         )
@@ -128,7 +128,7 @@ class ConfigValidatorTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'someService' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\ServiceWithMixedDependencies',
+                        'class' => 'Tests\Gorka\Pimp\Fixtures\ServiceWithMixedDependencies',
                         'params' => array(
                             '@someService',
                             23
@@ -147,7 +147,7 @@ class ConfigValidatorTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'someService' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\ServiceWithMixedDependencies',
+                        'class' => 'Tests\Gorka\Pimp\Fixtures\ServiceWithMixedDependencies',
                         'params' => array(
                             '@undefinedService',
                             23
@@ -169,10 +169,10 @@ class ConfigValidatorTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'simpleService' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\SimpleService'
+                        'class' => 'Tests\Gorka\Pimp\Fixtures\SimpleService'
                     ),
                     'someService' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\ServiceWithMixedDependencies',
+                        'class' => 'Tests\Gorka\Pimp\Fixtures\ServiceWithMixedDependencies',
                         'params' => array(
                             '@simpleService',
                             '~undefinedParam'
@@ -194,10 +194,10 @@ class ConfigValidatorTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'simpleService' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\SimpleService'
+                        'class' => 'Tests\Gorka\Pimp\Fixtures\SimpleService'
                     ),
                     'someService' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\ServiceWithMixedDependencies',
+                        'class' => 'Tests\Gorka\Pimp\Fixtures\ServiceWithMixedDependencies',
                         'params' => array(
                             '@simpleService',
                             '~undefinedParam'
@@ -220,10 +220,10 @@ class ConfigValidatorTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'simpleService' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\SimpleService'
+                        'class' => 'Tests\Gorka\Pimp\Fixtures\SimpleService'
                     ),
                     'someService' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\ServiceWithMixedDependencies',
+                        'class' => 'Tests\Gorka\Pimp\Fixtures\ServiceWithMixedDependencies',
                         'params' => array(
                             '@simpleService',
                             '~undefinedParam'
@@ -248,10 +248,10 @@ class ConfigValidatorTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'simpleService' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\SimpleService'
+                        'class' => 'Tests\Gorka\Pimp\Fixtures\SimpleService'
                     ),
                     'someService' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\ServiceWithMixedDependencies',
+                        'class' => 'Tests\Gorka\Pimp\Fixtures\ServiceWithMixedDependencies',
                         'params' => array(
                             '@simpleService',
                             '~undefinedParam'
@@ -277,10 +277,10 @@ class ConfigValidatorTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'simpleService' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\SimpleService'
+                        'class' => 'Tests\Gorka\Pimp\Fixtures\SimpleService'
                     ),
                     'someService' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\ServiceWithMixedDependencies',
+                        'class' => 'Tests\Gorka\Pimp\Fixtures\ServiceWithMixedDependencies',
                         'params' => array(
                             '@simpleService',
                             '~undefinedParam'
@@ -305,7 +305,7 @@ class ConfigValidatorTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'simpleService' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\SimpleService',
+                        'class' => 'Tests\Gorka\Pimp\Fixtures\SimpleService',
                         'options' => 'Not a valid options array'
                     )
                 )
@@ -324,14 +324,14 @@ class ConfigValidatorTest extends \PHPUnit_Framework_TestCase {
             array(
                 'services' => array(
                     'SimpleService' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\SimpleService'
+                        'class' => 'Tests\Gorka\Pimp\Fixtures\SimpleService'
                     ),
                     'ServiceWithSimpleDependency' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\ServiceWithSimpleDependency',
+                        'class' => 'Tests\Gorka\Pimp\Fixtures\ServiceWithSimpleDependency',
                         'params' => array('@SimpleService')
                     ),
                     'ServiceWithMixedDependencies' => array(
-                        'class' => 'Gorkaio\Pimp\Tests\Fixtures\ServiceWithMixedDependencies',
+                        'class' => 'Tests\Gorka\Pimp\Fixtures\ServiceWithMixedDependencies',
                         'params' => array(
                             '@SimpleService',
                             '~param1',

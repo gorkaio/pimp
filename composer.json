@@ -1,5 +1,5 @@
 {
-  "name": "gorkaio/pimp",
+  "name": "Gorka/pimp",
   "description": "Simple Dependency Injection Container",
   "license": "MIT",
   "authors": [
@@ -11,21 +11,19 @@
   ],
   "autoload": {
     "psr-4": {
-      "Gorkaio\\Pimp\\": "src"
+      "Gorka\\Pimp\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Gorkaio\\Pimp\\Tests\\": "tests/Unit"
+      "Tests\\Gorka\\Pimp\\": "tests/Unit"
     }
   },
   "require": {
     "php": ">=5.5.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "4.*",
-    "phpdocumentor/phpdocumentor": "~2.8",
-    "squizlabs/php_codesniffer": "~2.2"
+    "phpunit/phpunit": "~4.6"
   },
   "minimum-stability": "stable"
 }

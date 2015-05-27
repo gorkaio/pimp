@@ -7,12 +7,12 @@ _Pimp_ is a simple dependency injection container implementation in PHP
 ## Installation
 Using _composer_, inside your project root run:
 
-    composer require gorkaio/pimp
+    composer require Gorka/pimp
 
 ## Container
 Simple use case:
 
-    use Gorkaio\Pimp\Container;
+    use Gorka\Pimp\Container;
 
     $config = array(
         'services' =>
@@ -41,16 +41,16 @@ Service dependencies are defined as an array:
         array(
             'services' => array(
                 'SimpleService' => array(
-                    'class' => 'Gorkaio\Pimp\Test\Fixtures\SimpleService'
+                    'class' => 'Gorka\Pimp\Test\Fixtures\SimpleService'
                 ),
                 'ServiceWithSimpleDependency' => array(
-                    'class' => 'Gorkaio\Pimp\Test\Fixtures\ServiceWithSimpleDependency',
+                    'class' => 'Gorka\Pimp\Test\Fixtures\ServiceWithSimpleDependency',
                     'params' => array(
                         '@SimpleService'
                     )
                 ),
                 'ServiceWithMixedDependencies' => array(
-                    'class' => 'Gorkaio\Pimp\Test\Fixtures\ServiceWithMixedDependencies',
+                    'class' => 'Gorka\Pimp\Test\Fixtures\ServiceWithMixedDependencies',
                     'params' => array(
                         '@SimpleService',
                         '~param1',

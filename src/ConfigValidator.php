@@ -6,7 +6,7 @@
  * Time: 19:50
  */
 
-namespace Gorkaio\Pimp;
+namespace Gorka\Pimp;
 
 /**
  * Class ConfigValidator

@@ -6,7 +6,7 @@
  * Time: 20:19
  */
 
-namespace Gorkaio\Pimp\Exceptions;
+namespace Gorka\Pimp\Exceptions;
 
 /**
  * Class InvalidConfigException

@@ -1,6 +1,6 @@
 <?php
 
-namespace Gorkaio\Pimp\Tests\Fixtures;
+namespace Tests\Gorka\Pimp\Fixtures;
 
 class ServiceWithSimpleDependency {
 

@@ -1,9 +1,11 @@
+# Composer
 vendor/
-doc/
+
+# Reports
 coverage.clover
 
 # IDE
 .idea
 
-# Others
+# OSX
 .DS_Store

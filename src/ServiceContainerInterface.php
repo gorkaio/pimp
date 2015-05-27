@@ -5,7 +5,7 @@
  * @license MIT
  */
 
-namespace Gorkaio\Pimp;
+namespace Gorka\Pimp;
 
 /**
  * Interface ServiceContainerInterface

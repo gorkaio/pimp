@@ -5,12 +5,12 @@
  * @license MIT
  */
 
-namespace Gorkaio\Pimp;
+namespace Gorka\Pimp;
 
 use ReflectionClass;
-use Gorkaio\Pimp\Exceptions\InvalidConfigException;
-use Gorkaio\Pimp\Exceptions\ServiceException;
-use Gorkaio\Pimp\Exceptions\ServiceNotFoundException;
+use Gorka\Pimp\Exceptions\InvalidConfigException;
+use Gorka\Pimp\Exceptions\ServiceException;
+use Gorka\Pimp\Exceptions\ServiceNotFoundException;
 
 /**
  * Class Container

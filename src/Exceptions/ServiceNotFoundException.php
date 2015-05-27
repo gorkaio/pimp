@@ -5,7 +5,7 @@
  * @license MIT
  */
 
-namespace Gorkaio\Pimp\Exceptions;
+namespace Gorka\Pimp\Exceptions;
 
 /**
  * Class ServiceNotFoundException
