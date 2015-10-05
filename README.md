@@ -9,6 +9,8 @@ a [config manager](https://github.com/glopezdetorre/config) instead.
 
 [![Build Status](https://travis-ci.org/glopezdetorre/pimp.svg?branch=master)](https://travis-ci.org/glopezdetorre/pimp)
 [![Code Coverage](https://scrutinizer-ci.com/g/glopezdetorre/pimp/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/glopezdetorre/pimp/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/glopezdetorre/pimp/badges/quality-score.png?branch=master)](https://scrutinizer-ci.com/g/glopezdetorre/pimp/?branch=master)
+
 
 ## Installation
 
