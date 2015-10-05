@@ -2,16 +2,13 @@ language: php
 php:
   - 5.5
   - 5.6
-  - 7
-  - hhvm
 
 cache:
     directories:
         - $HOME/.composer/cache
 
 before_script:
-  - if [[ "$TRAVIS_PHP_VERSION" == "hhvm" ]] || [[ "$TRAVIS_PHP_VERSION" == "7" ]]; then printf "\n" | pecl install xdebug; fi
-  - if [[ "$TRAVIS_PHP_VERSION" == "hhvm" ]] || [[ "$TRAVIS_PHP_VERSION" == "7" ]]; then phpenv config-add travis-php7.ini; else phpenv config-add travis.ini; fi
+  - phpenv config-add travis.ini
   - composer install --dev
 
 script: vendor/bin/phpspec run -n
