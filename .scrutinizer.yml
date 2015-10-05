@@ -1,5 +1,10 @@
 imports:
   - php
 
+filter:
+  excluded_paths:
+    - features/*
+    - spec/*
+
 tools:
   external_code_coverage: true
