@@ -1,5 +1,8 @@
 # Change Log
 
+## [3.0.1] - 2015-10-05
+- Fixed scrutinizer coverage upload
+
 ## [3.0.0] - 2015-10-05
 - [Container Interop](https://github.com/container-interop/container-interop) compliance
 
