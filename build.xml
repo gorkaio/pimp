@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Pimp" default="test">
+
+    <target name="pre-commit" description="Run pre-commit hook" depends="test">
+    </target>
+
+    <target name="test" description="Run available test suites" depends="clean,test:phpspec,test:phpunit,test:behat,test:static-review,test:phpmetrics">
+    </target>
+
+    <target name="clean" description="Clean build files">
+        <delete dir="./build" />
+    </target>
+
+    <target name="githook:install" description="Install git-hooks">
+        <if>
+            <not>
+                <available file=".git/hooks/pre-commit" type="file" property="precommit.Exists" />
+            </not>
+            <then>
+                <copy file="bin/pre-commit" tofile=".git/hooks/pre-commit" />
+                <chmod file=".git/hooks/pre-commit" mode="0775" />
+            </then>
+            <else>
+                <if>
+                    <not>
+                        <filesmatch file1="bin/pre-commit" file2=".git/hooks/pre-commit" />
+                    </not>
+                    <then>
+                        <input propertyname="confirm_precommit_overwrite">Confirm precommit overwrite (yes|no):</input>
+                        <if>
+                            <equals arg1="${confirm_precommit_overwrite}" arg2="yes" />
+                            <then>
+                                <copy file="bin/pre-commit" tofile=".git/hooks/pre-commit" />
+                                <chmod file=".git/hooks/pre-commit" mode="0775" />
+                            </then>
+                        </if>
+                    </then>
+                    <else>
+                        <echo>pre-commit hook is already installed</echo>
+                    </else>
+                </if>
+            </else>
+        </if>
+    </target>
+
+    <target name="githook:remove" description="Remove git-hooks">
+        <available file=".git/hooks/pre-commit" type="file" property="precommit.NotExists" />
+        <if>
+            <isset property="precommit.NotExists" />
+            <then>
+                <input propertyname="confirm_precommit_remove">Confirm precommit removal (yes|no):</input>
+                <if>
+                    <equals arg1="${confirm_precommit_remove}" arg2="yes" />
+                    <then>
+                        <delete file=".git/hooks/pre-commit" />
+                    </then>
+                </if>
+            </then>
+            <else>
+                <echo>pre-commit hook does not exist</echo>
+            </else>
+        </if>
+    </target>
+
+    <target name="test:phpspec" description="Run phpspec if avaliable">
+        <available file="vendor/bin/phpspec" type="file" property="phpspec.Exists" />
+        <available file="phpspec.yml" type="file" property="phpspecConfig.Exists" />
+        <if>
+            <and>
+                <isset property="phpspec.Exists" />
+                <isset property="phpspecConfig.Exists" />
+            </and>
+            <then>
+                <exec command="vendor/bin/phpspec run" checkreturn="true" passthru="true">
+                    <arg value="--config=phpspec.yml"></arg>
+                </exec>
+            </then>
+            <else>
+                <echo>Skipping phpspec</echo>
+            </else>
+        </if>
+    </target>
+
+    <target name="test:behat" description="Run behat if avaliable">
+        <available file="vendor/bin/behat" type="file" property="behat.Exists" />
+        <available file="behat.yml" type="file" property="behatConfig.Exists" />
+        <if>
+            <and>
+                <isset property="behat.Exists" />
+                <isset property="behatConfig.Exists" />
+            </and>
+            <then>
+                <exec command="vendor/bin/behat" checkreturn="true" passthru="true">
+                    <arg value="--config=behat.yml"></arg>
+                </exec>
+            </then>
+            <else>
+                <echo>Skipping behat</echo>
+            </else>
+        </if>
+    </target>
+
+    <target name="test:phpunit" description="Run phpunit if available">
+        <available file="vendor/bin/phpunit" type="file" property="phpunit.Exists" />
+        <available file="phpunit.xml" type="file" property="phpunitConfig.Exists" />
+        <if>
+            <and>
+                <isset property="phpunit.Exists" />
+                <isset property="phpunitConfig.Exists" />
+            </and>
+            <then>
+                <exec command="vendor/bin/phpunit" checkreturn="true" passthru="true">
+                    <arg value="--config=phpunit.xml"></arg>
+                </exec>
+            </then>
+            <else>
+                <echo>Skipping phpunit</echo>
+            </else>
+        </if>
+    </target>
+
+    <target name="test:static-review" description="Run static-analysis if available">
+        <available file="vendor/bin/static-review.php" type="file" property="staticReview.Exists" />
+        <available file="bin/static-review.php" type="file" property="staticReviewLocal.Exists" />
+        <if>
+            <and>
+                <isset property="staticReview.Exists" />
+                <isset property="staticReviewLocal.Exists" />
+            </and>
+            <then>
+                <exec command="bin/static-review.php" checkreturn="true" passthru="true">
+                </exec>
+            </then>
+            <else>
+                <echo>Skipping static review</echo>
+            </else>
+        </if>
+    </target>
+
+    <target name="test:phpmetrics" description="Run phpmetrics if available">
+        <available file="vendor/bin/phpmetrics" type="file" property="phpmetrics.Exists" />
+        <available file="phpmetrics.yml" type="file" property="phpmetricsConfig.Exists" />
+        <if>
+            <and>
+                <isset property="phpmetrics.Exists" />
+                <isset property="phpmetricsConfig.Exists" />
+            </and>
+            <then>
+                <exec executable="vendor/bin/phpmetrics" passthru="true">
+                    <arg value="--config=phpmetrics.yml" />
+                </exec>
+            </then>
+            <else>
+                <echo>Skipping phpmetrics</echo>
+            </else>
+        </if>
+    </target>
+</project>

@@ -1,0 +1,19 @@
+suites:
+  tickt_suite:
+    namespace: Gorka\Pimp
+    psr4_prefix: Gorka\Pimp
+
+extensions:
+  - PhpSpec\Extension\CodeCoverageExtension
+
+code_coverage:
+  output:
+    html: build/coverage/spec
+    clover: build/coverage/spec/coverage.xml
+  format:
+    - html
+    - clover
+
+rerunner:
+  path: vendor/bin/phpspec
+  commands: [describe, exemplify]

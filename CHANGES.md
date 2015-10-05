@@ -1,8 +1,7 @@
 # Change Log
 
-## [Unreleased][unreleased]
-### Changed
-- Support escaping on service param names
+## [3.0.0] - 2015-10-05
+- [Container Interop](https://github.com/container-interop/container-interop) compliance
 
 ## [2.0.0] - 2015-05-27
 

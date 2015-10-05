@@ -1,8 +1,9 @@
 # Composer
+composer.lock
 vendor/
 
-# Reports
-coverage.clover
+# Build
+build
 
 # IDE
 .idea
