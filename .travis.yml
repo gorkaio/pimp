@@ -1,15 +1,23 @@
 language: php
 php:
   - 5.5
+  - 5.6
+  - 7
+  - hhvm
+
+cache:
+    directories:
+        - $HOME/.composer/cache
 
 before_script:
   - composer install --dev
+  - phpenv config-add travis.ini
 
-script: vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.clover tests/Unit
+script: vendor/bin/phpspec run -n
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+  - php ocular.phar code-coverage:upload --format=php-clover build/coverage/coverage.xml
 
 notifications:
   email:

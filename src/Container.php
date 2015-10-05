@@ -1,159 +1,160 @@
 <?php
-/**
- * Project: Pimp
- * File: Container.php
- * @license MIT
- */
 
 namespace Gorka\Pimp;
 
-use ReflectionClass;
-use Gorka\Pimp\Exceptions\InvalidConfigException;
-use Gorka\Pimp\Exceptions\ServiceException;
-use Gorka\Pimp\Exceptions\ServiceNotFoundException;
+use Assert\Assertion;
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\ContainerException;
+use Interop\Container\Exception\NotFoundException;
+use Gorka\Pimp\Exception\ContainerException as PimpContainerException;
+use Gorka\Pimp\Exception\NotFoundException as EntryNotFoundException;
 
 /**
  * Class Container
- *
- * @package Gorkaio\Pimp
+ * @package Gorka\Pimp
  */
-class Container implements ServiceContainerInterface
+class Container implements ContainerInterface
 {
-    const SERVICE_SCOPE_PROTOTYPE = 'prototype';
-    const SERVICE_SCOPE_SINGLETON = 'singleton';
+    /**
+     * @var \Closure[] Closures array by name
+     */
+    private $closures = [];
 
     /**
-     * @var array Service and params definitions
+     * @var object[] Instances
      */
-    protected $config;
+    private $instances = [];
 
     /**
-     * @var array Service instances for services with scope 'singleton'
+     * @var ServiceFactory[] Factories array by name
      */
-    protected $serviceInstances;
+    private $factories = [];
 
     /**
-     * @param array $config Configuration array for services and params
-     * @param bool $useValidation Validate config on container instantiation
-     * @throws InvalidConfigException
+     * @var string[] Registered service/factory names
      */
-    public function __construct($config, $useValidation = true)
+    private $registeredIds = [];
+
+    /**
+     * Constructor
+     *
+     * You may provide an array of services to the initialization:
+     *
+     * $container = new Container([
+     *      'service' => function ($c) { return new MyService(); },
+     *      'factory' => ServiceFactory::create(function($c) { return new MyOtherService($c->get('service')); } )
+     * ]);
+     *
+     * @param array|null $entries
+     * @throws PimpContainerException
+     */
+    public function __construct($entries = null)
     {
-        if ($useValidation) {
-            $validator = new ConfigValidator();
-            if (!$validator->isValid($config)) {
-                throw new InvalidConfigException();
-            }
-            $this->config = $config;
+        if (null === $entries) {
+            $entries = [];
+        }
+
+        foreach ($entries as $id => $entry) {
+            $this->add($id, $entry);
         }
     }
 
     /**
-     * Get service instance by name
+     * Finds an entry of the container by its identifier and returns it.
      *
-     * @param string $serviceName Service name
-     * @throws ServiceException
-     * @throws ServiceNotFoundException
-     * @return object Service instance
+     * @param string $id Identifier of the entry to look for.
+     *
+     * @throws NotFoundException  No entry was found for this identifier.
+     * @throws ContainerException Error while retrieving the entry.
+     *
+     * @return mixed Entry.
      */
-    public function get($serviceName)
+    public function get($id)
     {
-        if (isset($this->serviceInstances[$serviceName])) {
-            $service = $this->serviceInstances[$serviceName];
+        if (!$this->has($id)) {
+            throw new EntryNotFoundException(sprintf('Service with id \'%s\' not found', $id));
+        }
+
+        if (isset($this->instances[$id])) {
+            $instance = $this->instances[$id];
+        } elseif (isset($this->closures[$id])) {
+            $this->instances[$id] = $this->closures[$id]($this);
+            $instance = $this->instances[$id];
         } else {
-            $service = $this->getNewInstance($serviceName);
-
-            $scope = isset($this->config['services'][$serviceName]['options']['scope'])
-                ?$this->config['services'][$serviceName]['options']['scope']
-                :self::SERVICE_SCOPE_PROTOTYPE;
-
-            if ($scope == self::SERVICE_SCOPE_SINGLETON) {
-                $this->serviceInstances[$serviceName] = $service;
-            }
+            $instance = $this->factories[$id]->getInstance($this);
         }
 
-        return $service;
+        return $instance;
     }
 
     /**
-     * Returns a new service instance
+     * Returns true if the container can return an entry for the given identifier.
+     * Returns false otherwise.
      *
-     * @param string $serviceName Service name
-     * @return object Instance of the service requested
-     * @throws ServiceException
+     * @param string $id Identifier of the entry to look for
+     *
+     * @return boolean
      */
-    private function getNewInstance($serviceName)
+    public function has($id)
+    {
+        return (in_array($id, $this->registeredIds));
+    }
+
+    /**
+     * Adds a service with the given id
+     *
+     * @param string $id Identifier of the entry
+     * @param \Closure|ServiceFactory $entry Entry itself or closure to get an instance of it
+     *
+     * @throws ContainerException
+     */
+    public function add($id, $entry)
     {
         try {
-            $serviceConfig = $this->config['services'][$serviceName];
-            if (isset($serviceConfig['class']) && $serviceConfig['class'] != '') {
-                $serviceClassName = $serviceConfig['class'];
-            } else {
-                throw new \InvalidArgumentException('Invalid config');
-            }
-
-            $serviceParameters = isset($serviceConfig['params'])?$serviceConfig['params']:array();
-
-            // Service instantiation
-            $paramValues = $this->parseParameters($serviceParameters);
-            if (count($paramValues) > 0) {
-                $r = new ReflectionClass($serviceClassName);
-                $service = $r->newInstanceArgs($paramValues);
-            } else {
-                $service = new $serviceClassName;
-            }
-
-            // Call defined setters
-            $serviceSetters = isset($serviceConfig['setters'])?$serviceConfig['setters']:array();
-
-            foreach ($serviceSetters as $setterName => $setterParams) {
-                if ($setterParams === null) {
-                    $setterParams = array();
-                }
-                call_user_func_array(
-                    array($service, $setterName),
-                    $this->parseParameters($setterParams)
-                );
-            }
-
+            $this->guardEntryId($id);
+            $this->guardEntry($entry);
         } catch (\Exception $e) {
-            throw new ServiceException(
-                sprintf("Unable to start service '%s': %s", $serviceName, $e->getMessage())
-            );
+            throw new PimpContainerException($e->getMessage());
         }
 
-        return $service;
+        $this->registeredIds[] = $id;
+        if ($entry instanceof ServiceFactory) {
+            unset($this->closures[$id], $this->instances[$id]);
+            $this->factories[$id] = $entry;
+        } else {
+            unset($this->factories[$id], $this->instances[$id]);
+            $this->closures[$id] = $entry;
+        }
     }
 
     /**
-     * Parses service dependencies and params and returns an array usable for a callable
+     * Validate entry ID
      *
-     * @param array $serviceParameters 'params' sub-array of the service configuration
-     * @return array Array of params usable for a callable method
-     * @throws ServiceException
-     * @throws ServiceNotFoundException
-     * @todo: allow parameter escaping for literals
+     * Entry ID should be a non empty, non blank, string
+     *
+     * @param mixed $id
+     *
+     * @throws \InvalidArgumentException
      */
-    private function parseParameters($serviceParameters)
+    private function guardEntryId($id)
     {
-        $paramValues = array();
-        foreach ($serviceParameters as $serviceParameter) {
-            if (preg_match("/^@(.*)/", $serviceParameter, $matches)) {
-                if (!isset($matches[1])) {
-                    throw new \InvalidArgumentException();
-                } else {
-                    $paramValues[] = $this->get($matches[1]);
-                }
-            } elseif (preg_match("/^~(.*)/", $serviceParameter, $matches)) {
-                if (!isset($matches[1])) {
-                    throw new \InvalidArgumentException();
-                } else {
-                    $paramValues[] = $this->config['params'][$matches[1]];
-                }
-            } else {
-                $paramValues[] = $serviceParameter;
-            }
+        Assertion::string($id, 'Id should be a string');
+        Assertion::notBlank(trim($id), 'Id cannot be blank');
+    }
+
+    /**
+     * Validate entry
+     *
+     * Entry should be an object or callable
+     *
+     * @param mixed $entry
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function guardEntry($entry)
+    {
+        if (!(($entry instanceof \Closure) || ($entry instanceof ServiceFactory))) {
+            throw new \InvalidArgumentException('Entry must be a Closure or ServiceFactory');
         }
-        return $paramValues;
     }
 }

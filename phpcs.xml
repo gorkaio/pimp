@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<ruleset name="Custom">
+    <description>Custom Coding Standard</description>
+    <rule ref="PSR2"/>
+
+    <exclude-pattern>*/Tests/*</exclude-pattern>
+    <exclude-pattern>spec/*</exclude-pattern>
+    <exclude-pattern>features/*</exclude-pattern>
+
+    <rule ref="Generic.PHP.ForbiddenFunctions">
+        <properties>
+            <property name="forbiddenFunctions" type="array" value="sizeof=>count,delete=>unset,eval=>null,system=>null,phpinfo=>null,die=>null,var_dump=>null"/>
+        </properties>
+    </rule>
+</ruleset>

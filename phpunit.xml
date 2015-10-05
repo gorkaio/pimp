@@ -9,9 +9,22 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false">
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">src</directory>
+            <exclude>
+                <directory>vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
     <testsuites>
-        <testsuite name="Pimp Test Suite">
+        <testsuite name="Test Suite">
             <directory suffix=".php">./tests/</directory>
         </testsuite>
     </testsuites>
+    <logging>
+        <log type="coverage-html" target="build/coverage/unit" charset="UTF-8" yui="true" highlight="true"/>
+        <log type="coverage-clover" target="build/coverage/unit/coverage.xml"/>
+    </logging>
+
 </phpunit>
