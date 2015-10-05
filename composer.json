@@ -24,6 +24,7 @@
     "container-interop/container-interop-implementation": "^1.1"
   },
   "require-dev": {
+    "ext-xdebug": ">=2.1.4",
     "phpspec/phpspec": "^2.3",
     "henrikbjorn/phpspec-code-coverage": "^1.0",
     "squizlabs/php_codesniffer": "^2.3",
