@@ -11,8 +11,8 @@ cache:
 
 before_script:
   - composer install --dev
-  - if [[ "$PHP_VERSION" == "7" ]]; then pecl install xdebug; fi
-  - if [[ "$PHP_VERSION" == "7" ]]; then phpenv config-add travis-php7.ini; else phpenv config-add travis.ini; fi
+  - if [[ ${TRAVIS_PHP_VERSION} == "7.0" ]]; then pecl install xdebug; fi
+  - if [[ ${TRAVIS_PHP_VERSION} == "7.0" ]]; then phpenv config-add travis-php7.ini; else phpenv config-add travis.ini; fi
 
 script: vendor/bin/phpspec run -n
 
