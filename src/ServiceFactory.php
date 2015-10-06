@@ -2,6 +2,10 @@
 
 namespace Gorka\Pimp;
 
+/**
+ * Class ServiceFactory
+ * @package Gorka\Pimp
+ */
 class ServiceFactory
 {
     /**
@@ -10,6 +14,8 @@ class ServiceFactory
     private $closure;
 
     /**
+     * Constructor
+     *
      * @param \Closure $closure
      */
     private function __construct(\Closure $closure)
@@ -18,7 +24,10 @@ class ServiceFactory
     }
 
     /**
+     * Create ServiceFactory
+     *
      * @param \Closure $closure
+     *
      * @return static
      */
     public static function create(\Closure $closure)
@@ -26,6 +35,13 @@ class ServiceFactory
         return new static ($closure);
     }
 
+    /**
+     * Get service instance
+     *
+     * @param Container $container
+     *
+     * @return object
+     */
     public function getInstance(Container $container)
     {
         $closure = $this->closure;

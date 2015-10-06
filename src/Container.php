@@ -46,6 +46,7 @@ class Container implements ContainerInterface
      * ]);
      *
      * @param array|null $entries
+     *
      * @throws PimpContainerException
      */
     public function __construct($entries = null)
