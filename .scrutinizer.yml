@@ -5,6 +5,7 @@ filter:
   excluded_paths:
     - features/*
     - spec/*
+    - tests/*
 
 tools:
   external_code_coverage: true
