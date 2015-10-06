@@ -1,5 +1,10 @@
 # Change Log
 
+## [3.0.2] - 2015-10-06
+- Moved phpunit requirement to develop
+- Added some docblocks
+- Removed tests from scrutinizer reporting
+
 ## [3.0.1] - 2015-10-05
 - Fixed scrutinizer coverage upload
 
