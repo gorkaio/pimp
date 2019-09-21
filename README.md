@@ -1,3 +1,6 @@
+⚠️ __This project is unmaintained and might eventually be removed. Use it at your own risk.__
+
+
 # Pimp: Simple Dependency Injection Container
 _Pimp_ is a PHP dependency injection container inspired by [Pimple](http://pimple.sensiolabs.org/),
 with a [Container Interop](https://github.com/container-interop/container-interop) turn to it.
